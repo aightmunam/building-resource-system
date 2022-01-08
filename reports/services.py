@@ -15,7 +15,8 @@ def load_buildings_from_file(file):
     objects using that data
 
     Args:
-        file (str): Csv file containing the building data
+        file (InMemoryUploadedFile): Csv file containing
+        the building data
     """
     buildings = []
 
@@ -23,7 +24,8 @@ def load_buildings_from_file(file):
     for building_data in all_buildings_data:
         buildings.append(Building(id=building_data[0], name=building_data[1]))
 
-    Building.objects.bulk_create(buildings, batch_size=999)
+    Building.objects.bulk_create(buildings, ignore_conflicts=True)
+    return len(buildings)
 
 
 def load_meters_from_file(file):
@@ -32,7 +34,8 @@ def load_meters_from_file(file):
     information for the buildings
 
     Args:
-        file (str): Csv file containing the meter data
+        file (InMemoryUploadedFile): Csv file containing
+        the meter data
     """
     meters = []
     all_meters_data = parse_data_from_file(file)
@@ -44,11 +47,12 @@ def load_meters_from_file(file):
                 building_id=meter_data[0],
                 id=meter_data[1],
                 fuel=fuel,
-                unit=meter_data[2],
+                unit=meter_data[3],
             )
         )
 
-    Meter.objects.bulk_create(meters)
+    Meter.objects.bulk_create(meters, ignore_conflicts=True)
+    return len(meters)
 
 
 def load_meter_readings_from_file(file):
@@ -57,7 +61,8 @@ def load_meter_readings_from_file(file):
     readings for the provided info
 
     Args:
-        file (str): Csv file containing the meter reading data
+        file (InMemoryUploadedFile): Csv file containing the
+        meter reading data
     """
     readings = []
     all_reading_data = parse_data_from_file(file)
@@ -71,4 +76,5 @@ def load_meter_readings_from_file(file):
             )
         )
 
-    MeterReading.objects.bulk_create(readings)
+    MeterReading.objects.bulk_create(readings, ignore_conflicts=True)
+    return len(readings)

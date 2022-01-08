@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block headtitle %}Load data from csv{% endblock %}
+
+{% block content %}
+    <div class="container w-50 m-5">
+        <div class="mb-3">
+             <h3>Upload files to add data</h3>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </div>
+</form>
+{% endblock content %}

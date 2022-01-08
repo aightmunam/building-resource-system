@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block headtitle %}Success{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-success mt-5" role="alert">
+    {{ message }}
+</div>
+
+{% if redirect_url %}
+    <a href="{{ redirect_url }}" class="btn btn-primary">Go Back</a>
+{% endif %}
+{% endblock %}

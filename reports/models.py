@@ -36,12 +36,18 @@ class Building(TimeStampMixin, NameMixin):
     Model for a building
     """
 
+    def building_meters(self):
+        """
+        Get all the meters associated with the building and
+        cache the fuel as well
+        """
+        return self.meters.all().select_related('fuel').order_by('id')
+
 
 class Fuel(TimeStampMixin, NameMixin):
     """
     Model to represent a fuel/resource type
     """
-
 
 
 class Meter(TimeStampMixin):
@@ -65,9 +71,6 @@ class Meter(TimeStampMixin):
     def __str__(self):
         return f"Building: {self.building_id}, Fuel: {self.fuel_id}, Unit: {self.unit}"
 
-    def get_absolute_url(self):
-        return reverse("Meter_detail", kwargs={"pk": self.pk})
-
 
 class MeterReading(TimeStampMixin):
     """
@@ -86,6 +89,3 @@ class MeterReading(TimeStampMixin):
 
     def __str__(self):
         return f"Meter: {self.meter_id}, value: {self.value}, time: {self.reading_taken_at}"
-
-    def get_absolute_url(self):
-        return reverse("MeterReading_detail", kwargs={"pk": self.pk})
