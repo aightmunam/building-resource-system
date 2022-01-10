@@ -3,12 +3,24 @@ Views for reports app
 """
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView, ListView, RedirectView
 
 from .forms import CSVFileUploadForm
 from .models import Building, Meter
 from .services import (load_buildings_from_file, load_meter_readings_from_file,
                        load_meters_from_file)
+
+
+class IndexRedirectView(RedirectView):
+    """
+    Redirect to buildings list page for index
+    """
+
+    def get_redirect_url(self, *args, **kwargs):
+        """
+        Get buildings list view as the target url
+        """
+        return reverse('building_list')
 
 
 class FileUploadFormView(FormView):

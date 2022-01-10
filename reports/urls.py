@@ -4,9 +4,10 @@ Urls for the reports app
 from django.urls import path
 
 from .views import (BuildingDetailView, BuildingListView, FileUploadFormView,
-                    MeterDetailView)
+                    IndexRedirectView, MeterDetailView)
 
 urlpatterns = [
+    path('', IndexRedirectView.as_view(), name='index'),
     path('upload/', FileUploadFormView.as_view(), name='upload_data'),
     path('buildings/', BuildingListView.as_view(), name='building_list'),
     path('meter/<int:pk>/', MeterDetailView.as_view(), name='meter_detail'),
