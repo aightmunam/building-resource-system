@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
 
-    'bootstrap5',
+    'bootstrap_pagination',
 
     # custom apps
     'reports.apps.ReportsConfig',

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="text-center mb-5">
+        <h3>Meter {{ meter.id }}</h3>
+        <p>Belongs to building <a href="{% url 'building_detail' meter.building_id %}">{{ meter.building }}</a></p>
+    </div>
+
+
+    <div class="d-flex flex-row justify-content-center">
+    <p class="alert-info p-3">Total consumption is <strong>{{ meter.total_consumption|floatformat:2 }} {{ meter.unit }} of {{ meter.fuel }}.</strong></p>
+    </div>
+
+
+    <div class="d-flex flex-row justify-content-center mt-3 mb-5">
+        <div class="d-flex flex-column">
+        <label class="mb-2">Select a date range:</label>
+            <input type="text" placeholder="Start Date" name="date-start">
+            <input type="text" placeholder="End Date" name="date-end">
+        </div>
+    </div>
+
+    <canvas id="meter-chart-canvas" width="1000" height="400"></canvas>
+    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+
+
+{% endblock %}
+
+{% block inline_javascript %}
+    <script src="{% static 'js/reports/reading_chart.js' %}"></script>
+    <script id="meter-chart" src="{% static 'js/reports/meter_detail.js' %}" data-url="{{ meter_data_url }}"></script>
+{% endblock %}

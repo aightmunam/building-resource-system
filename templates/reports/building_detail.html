@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container text-center">
+        <h1>{{ building.name }}</h1>
+    </div>
+
+    <div class="d-flex flex-row justify-content-center m-5">
+        <div class="d-flex flex-column">
+        <label class="mb-2">Select a date range:</label>
+            <input type="text" placeholder="Start Date" name="date-start">
+            <input type="text" placeholder="End Date" name="date-end">
+        </div>
+    </div>
+
+    <canvas id="building-chart-canvas" width="1000" height="400"></canvas>
+
+    <div class="mt-5">
+        <div class="mb-3">
+            <h5>Meters for this building:</h5>
+        </div>
+        <table class="table table-sm table-dark">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Fuel</th>
+              <th scope="col">Unit</th>
+            </tr>
+          </thead>
+        {% for meter in building.building_meters %}
+          <tbody>
+            <tr>
+              <th scope="row"><a class="text-light" href="{% url 'meter_detail' meter.id %}">{{ meter.id }}</a></th>
+              <td>{{ meter.fuel }}</td>
+              <td>{{ meter.unit }}</td>
+              </a>
+            </tr>
+          </tbody>
+        {% endfor %}
+        </table>
+    </div>
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+
+{% endblock %}
+
+{% block inline_javascript %}
+    <script src="{% static 'js/reports/reading_chart.js' %}"></script>
+    <script id="building-chart" src="{% static 'js/reports/building_detail.js' %}" data-url="{{ building_data_url }}"></script>
+{% endblock %}

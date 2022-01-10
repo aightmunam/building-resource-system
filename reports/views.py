@@ -3,15 +3,12 @@ Views for reports app
 """
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import FormView, ListView
+from django.views.generic import DetailView, FormView, ListView
 
 from .forms import CSVFileUploadForm
-from .models import Building
-from .services import (
-    load_buildings_from_file,
-    load_meter_readings_from_file,
-    load_meters_from_file
-)
+from .models import Building, Meter
+from .services import (load_buildings_from_file, load_meter_readings_from_file,
+                       load_meters_from_file)
 
 
 class FileUploadFormView(FormView):
@@ -57,7 +54,41 @@ class BuildingListView(ListView):
     Display a list of all the buildings
     """
 
-    template_name = 'reports/list.html'
-    paginate_by = 5
+    template_name = 'reports/building_list.html'
+    paginate_by = 6
     context_object_name = 'buildings'
     model = Building
+
+
+class MeterDetailView(DetailView):
+    """
+    View for displaying all the details of a Meter
+    """
+
+    template_name = 'reports/meter_detail.html'
+    model = Meter
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the reading data to be utilized for the charts
+        """
+        context = super().get_context_data()
+        context['meter_data_url'] = reverse('meter_readings', kwargs={'pk': self.object.id})
+        return context
+
+
+class BuildingDetailView(DetailView):
+    """
+    View for details regarding a building
+    """
+
+    template_name = 'reports/building_detail.html'
+    model = Building
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the url for requesting data for building readings
+        """
+        context = super().get_context_data()
+        context['building_data_url'] = reverse('building_readings', kwargs={'pk': self.object.id})
+        return context

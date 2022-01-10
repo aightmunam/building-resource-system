@@ -2,7 +2,6 @@
 All the models for the reports app
 """
 from django.db import models
-from django.urls import reverse
 
 
 class TimeStampMixin(models.Model):
@@ -36,6 +35,7 @@ class Building(TimeStampMixin, NameMixin):
     Model for a building
     """
 
+    @property
     def building_meters(self):
         """
         Get all the meters associated with the building and
@@ -70,6 +70,13 @@ class Meter(TimeStampMixin):
 
     def __str__(self):
         return f"Building: {self.building_id}, Fuel: {self.fuel_id}, Unit: {self.unit}"
+
+    @property
+    def total_consumption(self):
+        """
+        Total consumption made by the meter
+        """
+        return sum(self.readings.values_list('value', flat=True))
 
 
 class MeterReading(TimeStampMixin):
