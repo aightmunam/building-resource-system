@@ -2,6 +2,7 @@
 All the models for the reports app
 """
 from django.db import models
+from django.db.models import Sum
 
 
 class TimeStampMixin(models.Model):
@@ -79,6 +80,15 @@ class Meter(TimeStampMixin):
         return sum(self.readings.values_list('value', flat=True))
 
 
+class MeterReadingQuerySet(models.QuerySet):
+
+    def annotate_daily_consumption(self):
+        """
+        Add the daily consumption of the meter readings
+        """
+        return self.values('reading_taken_at__date').annotate(total_daily_consumption=Sum('value'))
+
+
 class MeterReading(TimeStampMixin):
     """
     Model to represent the reading of a meter
@@ -89,6 +99,8 @@ class MeterReading(TimeStampMixin):
     )
     value = models.FloatField()
     reading_taken_at = models.DateTimeField()
+
+    objects = MeterReadingQuerySet.as_manager()
 
     class Meta:
         verbose_name = "MeterReading"

@@ -30,6 +30,7 @@ var readingChart = function (canvasId, chartType, startDate, endDate, url, confi
             type: chartType,
             data: configChartData(chartData),
             options: {
+                responsive: true,
                 scales: {
                     y: {
                         title: {
@@ -43,10 +44,6 @@ var readingChart = function (canvasId, chartType, startDate, endDate, url, confi
                             display: true,
                             text: 'Reading Timestamp'
                         },
-                        ticks: {
-                            autoSkip: true,
-                            maxTicksLimit: 25,
-                        }
                     }
                 }
             }

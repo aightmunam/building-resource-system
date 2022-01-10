@@ -6,16 +6,17 @@ var meterChartData = function (chartData) {
             datasets: [{
                 label: `${chartData.label.resource} Consumption (${chartData.label.unit})`,
                 data: chartData.readings,
-                radius: 1.5,
-                borderWidth: 1.5,
+                borderWidth: 3,
+                radius: 2,
                 borderColor: "#c45850",
+                backgroundColor: "#c45850"
             }]
     };
 };
 
 readingChart(
     'meter-chart-canvas',
-    'bar',
+    'line',
     startDate,
     endDate,
     $('#meter-chart').data('url'),

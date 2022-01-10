@@ -10,8 +10,8 @@ from .models import Meter, MeterReading
 
 def get_chart_data_for_meter(meter_id, start_date, end_date):
     """
-    Get all the reading data for a meter and return it in json
-    format that can be used in charts
+    Get all the reading data for a meter and return the daily
+    consumption in json format that can be used in charts
 
     Args:
         meter_id (id): Id of the meter
@@ -28,9 +28,11 @@ def get_chart_data_for_meter(meter_id, start_date, end_date):
     meter = Meter.objects.filter(id=meter_id).select_related('fuel').first()
     readings = meter.readings.filter(reading_taken_at__range=[start_date, end_date])
 
+    readings = readings.annotate_daily_consumption()
+
     chart_data = {
         'readings': list(
-            readings.values(y=F('value'), x=F('reading_taken_at'))
+            readings.values(y=F('total_daily_consumption'), x=F('reading_taken_at__date'))
         ),
         'label': {
             'resource': meter.fuel.name,
@@ -43,8 +45,8 @@ def get_chart_data_for_meter(meter_id, start_date, end_date):
 
 def get_building_consumption_in_date_range(building_id, start_date, end_date):
     """
-    Get all the reading data for a building and return it in json
-    format that can be used in charts
+    Get all the reading data for a building, calculate the daily consumption in
+    the given date range and return it in json format that can be used in charts
 
     Args:
         building_id (id): Id of the building
@@ -63,29 +65,25 @@ def get_building_consumption_in_date_range(building_id, start_date, end_date):
         reading_taken_at__range=[start_date, end_date]
     )
 
-    readings = readings.values(
-        'reading_taken_at__month',
-        'reading_taken_at__year',
-        'reading_taken_at__hour',
-    ).annotate(total_value=Sum('value'))
+    readings = readings.annotate_daily_consumption()
 
     filtered_readings = {
         'electricity': list(
             readings.filter(meter__fuel__name='Electricity').values(
-                y=F('total_value'),
-                x=F('reading_taken_at'),
+                y=F('total_daily_consumption'),
+                x=F('reading_taken_at__date'),
             )
         ),
         'natural_gas': list(
             readings.filter(meter__fuel__name='Natural Gas').values(
-                y=F('total_value'),
-                x=F('reading_taken_at'),
+                y=F('total_daily_consumption'),
+                x=F('reading_taken_at__date'),
             )
         ),
         'water': list(
             readings.filter(meter__fuel__name='Water').values(
-                y=F('total_value'),
-                x=F('reading_taken_at'),
+                y=F('total_daily_consumption'),
+                x=F('reading_taken_at__date'),
             )
         ),
     }
