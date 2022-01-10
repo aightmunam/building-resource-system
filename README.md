@@ -1,5 +1,11 @@
 # building-resource-system
 
+### Database Design
+
+The database design diagram is as follows:
+
+![Database design](https://github.com/aightmunam/building-resource-system/blob/master/database-design.png?raw=true)
+
 ### Project Setup
 
 
