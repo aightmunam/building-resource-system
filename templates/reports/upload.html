@@ -1,19 +1,34 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block headtitle %}Load data from csv{% endblock %}
 
 {% block content %}
-    <div class="container w-50">
-        <div class="mb-3">
-             <h3>Upload files to add data</h3>
-        </div>
-
-        <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input class="btn btn-primary" type="submit" value="Submit">
-        </form>
+<div class="container w-50">
+    <div class="mb-3">
+         <h3>Upload files to add data</h3>
     </div>
-</form>
+
+    <form name="file-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
+</div>
+
+
+<div id="overlay">
+    <div class="overlay__wrapper d-flex justify-content-center align-items-center ">
+        <div class="d-flex flex-row justify-content-center">
+            <div id="spinner" class="overlay_spinner spinner-border text-light d-none" role="status">
+              <span class="sr-only"></span>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block inline_javascript %}
+    <script src="{% static 'js/reports/upload.js' %}"></script>
+{% endblock %}
