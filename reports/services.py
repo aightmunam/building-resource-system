@@ -3,6 +3,7 @@ All the service functions for the reports app
 """
 from datetime import datetime
 
+from django.db import transaction
 from django.utils.timezone import make_aware
 
 from .helpers import parse_data_from_file
@@ -40,18 +41,19 @@ def load_meters_from_file(file):
     meters = []
     all_meters_data = parse_data_from_file(file)
 
-    for meter_data in all_meters_data:
-        fuel, _ = Fuel.objects.get_or_create(name=meter_data[2])
-        meters.append(
-            Meter(
-                building_id=meter_data[0],
-                id=meter_data[1],
-                fuel=fuel,
-                unit=meter_data[3],
+    with transaction.atomic():
+        for meter_data in all_meters_data:
+            fuel, _ = Fuel.objects.get_or_create(name=meter_data[2])
+            meters.append(
+                Meter(
+                    building_id=meter_data[0],
+                    id=meter_data[1],
+                    fuel=fuel,
+                    unit=meter_data[3],
+                )
             )
-        )
 
-    Meter.objects.bulk_create(meters, ignore_conflicts=True)
+        Meter.objects.bulk_create(meters, ignore_conflicts=True)
     return len(meters)
 
 

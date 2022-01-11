@@ -8,7 +8,7 @@ var readingChart = function (canvasId, chartType, startDate, endDate, url, confi
 
 
     function sendGraphDataRequest() {
-        var requestUrl = `${url}?start=${startDatepicker.input.value || ''}&end=${endDatepicker.input.value || ''}`;
+        var requestUrl = `${url}?start=${encodeURIComponent(startDatepicker.input.value) || ''}&end=${encodeURIComponent(endDatepicker.input.value) || ''}`;
 
         $.ajax({
             url: requestUrl,
